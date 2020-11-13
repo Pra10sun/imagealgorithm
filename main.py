@@ -1,123 +1,87 @@
 
 
+
+
+
+
 import streamlit as st
-from PIL import Image
-import cv2 
 import numpy as np
+from PIL import Image, ImageEnhance
+import cv2
+
+
+
+faceDetect=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+eyes=cv2.CascadeClassifier('haarcascade_eye.xml')
+def detect_faces(up_image):
+	detect_img=np.array(up_image.convert('RGB'))
+	new_img1=cv2.cvtColor(detect_img,1)
+	# gray=cv2.cvtColor(new_img1,cv2.COLOR_BGR2GRAY)
+	faces=faceDetect.detectMultiScale(new_img1,1.3,5)
+	for x,y,w,h in faces:
+		cv2.rectangle(new_img1,(x,y),(x+w,y+h),(255,255,0),2)
+	return new_img1,faces
+def detect_eye(up_image):
+	detect_img=np.array(up_image.convert('RGB'))
+	new_img1=cv2.cvtColor(detect_img,1)
+	# gray=cv2.cvtColor(new_img1,cv2.COLOR_BGR2GRAY)
+	faces=eyes.detectMultiScale(new_img1,1.3,5)
+	for x,y,w,h in faces:
+		cv2.rectangle(new_img1,(x,y),(x+w,y+h),(255,255,0),2)
+	return new_img1,faces
+
 
 
 
 def main():
+	st.title("Face Detection App")
+	st.write("Build with Streamlit And Opencv")
+	activites=["Detection","About"]
+	choices=st.sidebar.selectbox("Select Activities",activites)
 
-    selected_box = st.sidebar.selectbox(
-    'Choose one of the following',
-    ('Welcome','Image Processing', 'Face Detection' )
-    )
-    
-    if selected_box == 'Welcome':
-        welcome() 
-    if selected_box == 'Image Processing':
-        photo()
-    
-    if selected_box == 'Face Detection':
-        face_detection()
-   
- 
-
-def welcome():
-    
-    st.title('Image Processing using Streamlit')
-    
-    st.subheader('A simple app that shows different image processing algorithms. You can choose the options'
-             + ' from the left. I have implemented only a few to show how it works on Streamlit. ' + 
-             'You are free to add stuff to this app.')
-    
-    st.image('hackershrine.jpg',use_column_width=True)
-
-
-def load_image(filename):
-    image = cv2.imread(filename)
-    return image
- 
-def photo():
-
-    st.header("Thresholding, Edge Detection and Contours")
-    
-    if st.button('See Original Image of Tom'):
-        
-        original = Image.open('tom.jpg')
-        st.image(original, use_column_width=True)
-        
-    image = cv2.imread('tom.jpg')
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    x = st.slider('Change Threshold value',min_value = 50,max_value = 255)  
-
-    ret,thresh1 = cv2.threshold(image,x,255,cv2.THRESH_BINARY)
-    thresh1 = thresh1.astype(np.float64)
-    st.image(thresh1, use_column_width=True,clamp = True)
-    
-    st.text("Bar Chart of the image")
-    histr = cv2.calcHist([image],[0],None,[256],[0,256])
-    st.bar_chart(histr)
-    
-    st.text("Press the button below to view Canny Edge Detection Technique")
-    if st.button('Canny Edge Detector'):
-        image = load_image("jerry.jpg")
-        edges = cv2.Canny(image,50,300)
-        cv2.imwrite('edges.jpg',edges)
-        st.image(edges,use_column_width=True,clamp=True)
-      
-    y = st.slider('Change Value to increase or decrease contours',min_value = 50,max_value = 255)     
-    
-    if st.button('Contours'):
-        im = load_image("jerry1.jpg")
-          
-        imgray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
-        ret,thresh = cv2.threshold(imgray,y,255,0)
-        image, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        
-        img = cv2.drawContours(im, contours, -1, (0,255,0), 3)
- 
-        
-        st.image(thresh, use_column_width=True, clamp = True)
-        st.image(img, use_column_width=True, clamp = True)
-         
-
-    
+	if choices=="Detection":
+		st.subheader("Face Detection")
+		img_file=st.file_uploader("Upload File",type=['png','jpg','jpeg'])
+		if img_file is not None:
+			up_image=Image.open(img_file)
+			st.image(up_image)
+		enhance_type=st.sidebar.radio("Enhance type",["Originial","Gray-scale","Contrast","Brightness","Blurring"])
+		if enhance_type=="Gray-scale":
+			new_img=np.array(up_image.convert('RGB'))
+			img=cv2.cvtColor(new_img,1)
+			gray=cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
+			st.image(gray)
+		if enhance_type=="Contrast":
+			c_make=st.sidebar.slider("Contrast",0.5,3.5)
+			enhacer=ImageEnhance.Contrast(up_image)
+			img_out=enhacer.enhance(c_make)
+			st.image(img_out)
+		if enhance_type=="Brightness":
+			b_make=st.sidebar.slider("Brightness",0.5,3.5)
+			enhacer=ImageEnhance.Brightness(up_image)
+			img_bg=enhacer.enhance(b_make)
+			st.image(img_bg)
+		if enhance_type=="Blurring":
+			br_make=st.sidebar.slider("Blurring",0.5,3.5)
+			br_img=np.array(up_image.convert('RGB'))
+			b_img=cv2.cvtColor(br_img,1)
+			blur=cv2.GaussianBlur(b_img,(11,11),br_make)
+			st.image(blur)
+		task=["Faces","Eye"]
+		feature_choice=st.sidebar.selectbox("Find Feature",task)
+		if st.button("Process"):
+			if feature_choice=="Faces":
+				result_img,result_faces=detect_faces(up_image)
+				st.image(result_img)
+				st.success("Found {} faces".format(len(result_faces)))
+			if feature_choice=="Eye":
+				result_img,result_faces=detect_eye(up_image)
+				st.image(result_img)
+				st.success("Found {} Eyes".format(len(result_faces)))
+			
+	elif choices=="About":
+		st.write("This Application is Developed By Chando Dhar")
 
 
-def face_detection():
-    
-    st.header("Face Detection using haarcascade")
-    
-    if st.button('See Original Image'):
-        
-        original = Image.open('friends.jpeg')
-        st.image(original, use_column_width=True)
-    
-    
-    image2 = cv2.imread("friends.jpeg")
-
-    face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-    faces = face_cascade.detectMultiScale(image2)
-    print(f"{len(faces)} faces detected in the image.")
-    for x, y, width, height in faces:
-        cv2.rectangle(image2, (x, y), (x + width, y + height), color=(255, 0, 0), thickness=2)
-    
-    cv2.imwrite("faces.jpg", image2)
-    
-    st.image(image2, use_column_width=True,clamp = True)
- 
-
-
-
-    
-    
-
-    
-    
-    
-    
-if __name__ == "__main__":
-    main()
+if __name__=='__main__':
+	main()
