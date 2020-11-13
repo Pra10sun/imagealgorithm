@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 27 20:37:29 2020
 
-@author: aniket wattamwar
-"""
 
 import streamlit as st
 from PIL import Image
@@ -16,21 +11,17 @@ def main():
 
     selected_box = st.sidebar.selectbox(
     'Choose one of the following',
-    ('Welcome','Image Processing', 'Video', 'Face Detection', 'Feature Detection', 'Object Detection')
+    ('Welcome','Image Processing', 'Face Detection' )
     )
     
     if selected_box == 'Welcome':
         welcome() 
     if selected_box == 'Image Processing':
         photo()
-    if selected_box == 'Video':
-        video()
+    
     if selected_box == 'Face Detection':
         face_detection()
-    if selected_box == 'Feature Detection':
-        feature_detection()
-    if selected_box == 'Object Detection':
-        object_detection() 
+   
  
 
 def welcome():
@@ -94,19 +85,7 @@ def photo():
          
 
     
-def video():
-    uploaded_file = st.file_uploader("Choose a video file to play")
-    if uploaded_file is not None:
-         bytes_data = uploaded_file.read()
- 
-         st.video(bytes_data)
-         
-    video_file = open('typing.mp4', 'rb')
-         
- 
-    video_bytes = video_file.read()
-    st.video(video_bytes)
- 
+
 
 def face_detection():
     
@@ -131,70 +110,11 @@ def face_detection():
     st.image(image2, use_column_width=True,clamp = True)
  
 
-def feature_detection():
-    st.subheader('Feature Detection in images')
-    st.write("SIFT")
-    image = load_image("tom1.jpg")
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    sift = cv2.xfeatures2d.SIFT_create()    
-    keypoints = sift.detect(gray, None)
-     
-    st.write("Number of keypoints Detected: ",len(keypoints))
-    image = cv2.drawKeypoints(image, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    st.image(image, use_column_width=True,clamp = True)
-    
-    
-    st.write("FAST")
-    image_fast = load_image("tom1.jpg")
-    gray = cv2.cvtColor(image_fast, cv2.COLOR_BGR2GRAY)
-    fast = cv2.FastFeatureDetector_create()
-    keypoints = fast.detect(gray, None)
-    st.write("Number of keypoints Detected: ",len(keypoints))
-    image_  = cv2.drawKeypoints(image_fast, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    st.image(image_, use_column_width=True,clamp = True)
+
 
     
     
-def object_detection():
-    
-    st.header('Object Detection')
-    st.subheader("Object Detection is done using different haarcascade files.")
-    img = load_image("clock.jpg")
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
-    
-    clock = cv2.CascadeClassifier('haarcascade_wallclock.xml')  
-    found = clock.detectMultiScale(img_gray,  
-                                   minSize =(20, 20)) 
-    amount_found = len(found)
-    st.text("Detecting a clock from an image")
-    if amount_found != 0:  
-        for (x, y, width, height) in found:
-     
-            cv2.rectangle(img_rgb, (x, y),  
-                          (x + height, y + width),  
-                          (0, 255, 0), 5) 
-    st.image(img_rgb, use_column_width=True,clamp = True)
-    
-    
-    st.text("Detecting eyes from an image")
-    
-    image = load_image("eyes.jpg")
-    img_gray_ = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
-    img_rgb_ = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
-        
-    eye = cv2.CascadeClassifier('haarcascade_eye.xml')  
-    found = eye.detectMultiScale(img_gray_,  
-                                       minSize =(20, 20)) 
-    amount_found_ = len(found)
-        
-    if amount_found_ != 0:  
-        for (x, y, width, height) in found:
-         
-            cv2.rectangle(img_rgb_, (x, y),  
-                              (x + height, y + width),  
-                              (0, 255, 0), 5) 
-        st.image(img_rgb_, use_column_width=True,clamp = True)
+
     
     
     
