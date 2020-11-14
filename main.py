@@ -70,7 +70,7 @@ def main():
 	choice = st.sidebar.selectbox("Select Activty",activities)
 
 	if choice == 'Detection':
-		st.subheader("Face Detection")
+		st.subheader("let's play")
 
 		image_file = st.file_uploader("Upload Image",type=['jpg','png','jpeg'])
 
