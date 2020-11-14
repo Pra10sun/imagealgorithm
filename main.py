@@ -4,6 +4,7 @@ import cv2
 from PIL import Image,ImageEnhance
 import numpy as np 
 import os
+st.set_option('deprecation.showfileUploaderEncoding', False)
 
 @st.cache
 def load_image(img):
