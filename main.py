@@ -61,9 +61,9 @@ def cannize_image(our_image):
 	return canny
 
 def main():
-	"""Face Detection App"""
+	"""Image Manipulation"""
 
-	st.title("Face Detection App")
+	st.title("Image Manipulation")
 	st.text("Build with Streamlit and OpenCV")
 
 	activities = ["Detection","About"]
