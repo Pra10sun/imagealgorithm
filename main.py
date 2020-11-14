@@ -15,16 +15,7 @@ def load_image(img):
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 
-def detect_faces(our_image):
-	new_img = np.array(our_image.convert('RGB'))
-	img = cv2.cvtColor(new_img,1)
-	gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
-	# Detect faces
-	faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-	# Draw rectangle around the faces
-	for (x, y, w, h) in faces:
-				 cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
-	return img,faces 
+
 
 def detect_faces(our_image):
 	detect_img=np.array(our_image.convert('RGB'))
@@ -38,7 +29,7 @@ def detect_faces(our_image):
 
 
 
-def cartonize_image(our_image):
+def cartoonize_image(our_image):
 	new_img = np.array(our_image.convert('RGB'))
 	img = cv2.cvtColor(new_img,1)
 	gray = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
@@ -113,7 +104,7 @@ def main():
 
 
 		# Face Detection
-		task = ["Faces","Cannize","Cartonize"]
+		task = ["Faces","Cannize","Cartoonize"]
 		feature_choice = st.sidebar.selectbox("Find Features",task)
 		if st.button("Process"):
 
@@ -127,8 +118,8 @@ def main():
 
 			
 
-			elif feature_choice == 'Cartonize':
-				result_img = cartonize_image(our_image)
+			elif feature_choice == 'Cartoonize':
+				result_img = cartoonize_image(our_image)
 				st.image(result_img)
 
 			elif feature_choice == 'Cannize':
