@@ -12,7 +12,7 @@ def load_image(img):
 	return im
 
 
-face_cascade = cv2.CascadeClassifier('frecog/haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 
 def detect_faces(our_image):
