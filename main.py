@@ -94,6 +94,17 @@ def main():
 			elif feature_choice == 'Cannize':
 				result_canny = cannize_image(our_image)
 				st.image(result_canny)
+				
+				
+				
+				
+		         elif choice == 'About':
+		st.subheader("About Face Detection App")
+		st.markdown("Built with Streamlit by [JCharisTech](https://www.jcharistech.com/)")
+		st.text("Jesse E.Agbe(JCharis)")
+		st.success("Jesus Saves @JCharisTech") 
+		
+		
 def detect_faces(our_image):
 	new_img = np.array(our_image.convert('RGB'))
 	img = cv2.cvtColor(new_img,1)
@@ -151,11 +162,7 @@ def cannize_image(our_image):
 
 
 
-	elif choice == 'About':
-		st.subheader("About Face Detection App")
-		st.markdown("Built with Streamlit by [JCharisTech](https://www.jcharistech.com/)")
-		st.text("Jesse E.Agbe(JCharis)")
-		st.success("Jesus Saves @JCharisTech")
+	
 
 
 
